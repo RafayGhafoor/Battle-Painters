@@ -4,6 +4,13 @@
 
 using namespace std;
 
+void print(auto text, int color, char def = 'n') {
+  setTextColor(color);
+  cout << text;
+  if (def == 'y')
+    setTextColor();
+}
+
 struct color_picker {
   int black[3] = {0, 0, 0};
   int white[3] = {255, 255, 255};
@@ -41,9 +48,10 @@ struct color_picker {
 };
 
 int main() {
-  myRect(500, 100, 150, 600, cp.dora, cp.dora);
-  myEllipse(200, 200, 250, 150, cp.white, cp.white);
-  myEllipse(200, 400, 250, 350, cp.white, cp.white);
+  color_picker cp;
+  myRect(500, 500, 50, 0, cp.dora, cp.dora);
+  // myEllipse(200, 200, 250, 150, cp.white, cp.white);
+  // myEllipse(200, 400, 250, 350, cp.white, cp.white);
   system("pause");
   return 0;
 }
