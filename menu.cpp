@@ -1,9 +1,13 @@
+#include "help.h"
+#include <conio.h>
 #include <iostream>
 #include <map>
+#include <stdio.h>
+#include <string>
+
 using namespace std;
 
-map<int, string> buildMenu(int size, string contents[])
-{
+map<int, string> buildMenu(int size, string contents[]) {
   /*
     Constructs a hashmap for game menu
       Parameters:
@@ -23,8 +27,8 @@ map<int, string> buildMenu(int size, string contents[])
 }
 
 // Defines the interface for the initial screen.
-void displayMenu(map<int, string> &menu, string begin = " |", string end = "|")
-{
+void displayMenu(map<int, string> &menu, string begin = " |",
+                 string end = "|") {
   /*
   Displays the contents in the menu.
     Parameters:
@@ -32,12 +36,10 @@ void displayMenu(map<int, string> &menu, string begin = " |", string end = "|")
   */
 
   for (int i = 1; i <= menu.size(); i++)
-    cout << begin << "(" << i << ") " << menu[i] << end << endl
-         << endl;
+    cout << begin << "(" << i << ") " << menu[i] << end << endl << endl;
 }
 
-int chooseMenu(map<int, string> &menu)
-{
+int chooseMenu(map<int, string> &menu) {
   /*
     Prompts the user to choose the menu
 
@@ -52,8 +54,7 @@ int chooseMenu(map<int, string> &menu)
   cin >> choice;
 
   // If provided choice is not present in the menu, ask again.
-  while (menu.count(choice) == 0)
-  {
+  while (menu.count(choice) == 0) {
     // https://stackoverflow.com/questions/19521320/why-do-i-get-an-infinite-loop-if-i-enter-a-letter-rather-than-a-number
     cin.clear();
     cin.ignore();
@@ -64,31 +65,29 @@ int chooseMenu(map<int, string> &menu)
   return choice;
 }
 
-int main()
-{
-  // Display Welcome Screen!
-  cout << R"(
-########################################################
-########################################################
-########################################################
-#              _______________________                 #
-#                W E L C O M E  T O                    #
-#               > BATTLE - PAINTERS <                  #
-#              -----------------------                 #
-########################################################
-########################################################
-########################################################
-########################################################
-########################################################
-########################################################
-)" << endl;
+// int main() {
+//   // Display Welcome Screen!
+//   cout << R"(
+// ########################################################
+// ########################################################
+// ########################################################
+// #              _______________________                 #
+// #                W E L C O M E  T O                    #
+// #               > BATTLE - PAINTERS <                  #
+// #              -----------------------                 #
+// ########################################################
+// ########################################################
+// ########################################################
+// ########################################################
+// ########################################################
+// ########################################################
+// )" << endl;
 
-  string contents[5] = {"<Battle Mode>", "<Ranking Mode>", "<Register>",
-                        "<Settings>", "<Quit>"};
+//   string contents[5] = {"<Battle Mode>", "<Ranking Mode>", "<Register>",
+//                         "<Settings>", "<Quit>"};
 
-  map<int, string> menu = buildMenu(5, contents);
+//   map<int, string> menu = buildMenu(5, contents);
 
-  int x = chooseMenu(menu);
-  cout << "You have chosen: " << menu[x] << endl;
-  //   initMenu();
-}
+//   int x = chooseMenu(menu);
+//   cout << "You have chosen: " << menu[x] << endl;
+// }

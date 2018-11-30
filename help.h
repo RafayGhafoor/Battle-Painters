@@ -1,125 +1,138 @@
 ﻿#include <windows.h>
 
-void gotoxy(int x, int y)
-{
-	COORD coord;
-	coord.X = x;
-	coord.Y = y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+WORD wOldColorAttrs;
+CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
+
+void setTextColor(int color = 7) {
+  SetConsoleTextAttribute(h, color | FOREGROUND_INTENSITY);
 }
 
-void myLine(int x1, int y1, int x2, int y2, int color[]) //use three 3 integers if you want colored lines.
-{
-	HWND console_handle = GetConsoleWindow();
-	HDC device_context = GetDC(console_handle);
-
-	//change the color by changing the values in RGB (from 0-255) to get shades of gray. For other colors use 3 integers for colors.
-	HPEN pen = CreatePen(PS_SOLID, 2, RGB(color[0], color[1], color[2])); //2 is the width of the pen
-	SelectObject(device_context, pen);
-	MoveToEx(device_context, x1, y1, NULL);
-	LineTo(device_context, x2, y2);
-	ReleaseDC(console_handle, device_context);
-	DeleteObject(pen);
+void gotoxy(int x, int y) {
+  COORD coord;
+  coord.X = x;
+  coord.Y = y;
+  SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void myTriangle(int x1, int y1, int x2, int y2, int color[], int bg[])
+void myLine(int x1, int y1, int x2, int y2,
+            int color[]) // use three 3 integers if you want colored lines.
 {
-	HWND console_handle = GetConsoleWindow();
-	HDC device_context = GetDC(console_handle);
+  HWND console_handle = GetConsoleWindow();
+  HDC device_context = GetDC(console_handle);
 
-	//change the color by changing the values in RGB (from 0-255) to get shades of gray. For other colors use 3 integers for colors.
-	HPEN pen = CreatePen(PS_SOLID, 2, RGB(color[0], color[1], color[2])); //2 is the width of the pen
-	SelectObject(device_context, pen);
+  // change the color by changing the values in RGB (from 0-255) to get shades
+  // of gray. For other colors use 3 integers for colors.
+  HPEN pen =
+      CreatePen(PS_SOLID, 2,
+                RGB(color[0], color[1], color[2])); // 2 is the width of the pen
+  SelectObject(device_context, pen);
+  MoveToEx(device_context, x1, y1, NULL);
+  LineTo(device_context, x2, y2);
+  ReleaseDC(console_handle, device_context);
+  DeleteObject(pen);
+}
 
-	int mid = (x1 + x2) / 2;
-	MoveToEx(device_context, mid, y1, NULL);
-	LineTo(device_context, x2, y2);
-	LineTo(device_context, x1, y2);
-	LineTo(device_context, mid + 1, y1);
+void myTriangle(int x1, int y1, int x2, int y2, int color[], int bg[]) {
+  HWND console_handle = GetConsoleWindow();
+  HDC device_context = GetDC(console_handle);
 
-	HBRUSH brush = ::CreateSolidBrush(RGB(bg[0], bg[1], bg[2])); //Fill color is black
-	SelectObject(device_context, brush);
+  // change the color by changing the values in RGB (from 0-255) to get shades
+  // of gray. For other colors use 3 integers for colors.
+  HPEN pen =
+      CreatePen(PS_SOLID, 2,
+                RGB(color[0], color[1], color[2])); // 2 is the width of the pen
+  SelectObject(device_context, pen);
 
-	FloodFill(device_context, mid, (y1 + y2) / 2, RGB(color[0], color[1], color[2]));
+  int mid = (x1 + x2) / 2;
+  MoveToEx(device_context, mid, y1, NULL);
+  LineTo(device_context, x2, y2);
+  LineTo(device_context, x1, y2);
+  LineTo(device_context, mid + 1, y1);
 
-	ReleaseDC(console_handle, device_context);
-	DeleteObject(pen);
-	DeleteObject(brush);
+  HBRUSH brush =
+      ::CreateSolidBrush(RGB(bg[0], bg[1], bg[2])); // Fill color is black
+  SelectObject(device_context, brush);
+
+  FloodFill(device_context, mid, (y1 + y2) / 2,
+            RGB(color[0], color[1], color[2]));
+
+  ReleaseDC(console_handle, device_context);
+  DeleteObject(pen);
+  DeleteObject(brush);
 }
 
 // This function checks if any of the 4 cursor keys are pressed.
-// If any cursor key is pressed, then the function returns true, and whichKey identifies which of the 4 cursor keys is pressed.
-// whichkey is assigned following values if any cursor key is pressed. 1 for left, 2 for up, 3 for right and 4 for left.
-bool isCursorKeyPressed(int &whickKey) //whichKey passed as reference....
+// If any cursor key is pressed, then the function returns true, and whichKey
+// identifies which of the 4 cursor keys is pressed. whichkey is assigned
+// following values if any cursor key is pressed. 1 for left, 2 for up, 3 for
+// right and 4 for left.
+bool isCursorKeyPressed(int &whickKey) // whichKey passed as reference....
 {
-	char key;
-	key = GetAsyncKeyState(37);
-	if (key == 1)
-	{
-		whickKey = 1; // 1 if left key is pressed
-		return true;
-	}
-	key = GetAsyncKeyState(38);
-	if (key == 1)
-	{
+  char key;
+  key = GetAsyncKeyState(37);
+  if (key == 1) {
+    whickKey = 1; // 1 if left key is pressed
+    return true;
+  }
+  key = GetAsyncKeyState(38);
+  if (key == 1) {
 
-		whickKey = 2; // 2 if up key is pressed
-		return true;
-	}
+    whickKey = 2; // 2 if up key is pressed
+    return true;
+  }
 
-	key = GetAsyncKeyState(39);
-	if (key == 1)
-	{
+  key = GetAsyncKeyState(39);
+  if (key == 1) {
 
-		whickKey = 3; // 3 if right key is pressed
-		return true;
-	}
-	key = GetAsyncKeyState(40);
-	if (key == 1)
-	{
+    whickKey = 3; // 3 if right key is pressed
+    return true;
+  }
+  key = GetAsyncKeyState(40);
+  if (key == 1) {
 
-		whickKey = 4; // 4 if down key is pressed
-		return true;
-	}
-	key = GetAsyncKeyState(13);
-	if (key == 1)
-	{
+    whickKey = 4; // 4 if down key is pressed
+    return true;
+  }
+  key = GetAsyncKeyState(13);
+  if (key == 1) {
 
-		whickKey = 5; // 4 if down key is pressed
-		return true;
-	}
-	return false;
+    whickKey = 5; // 4 if down key is pressed
+    return true;
+  }
+  return false;
 }
 
-void myRect(int x1, int y1, int x2, int y2, int color[], int bg[])
-{
-	HWND console_handle = GetConsoleWindow();
-	HDC device_context = GetDC(console_handle);
+void myRect(int x1, int y1, int x2, int y2, int color[], int bg[]) {
+  HWND console_handle = GetConsoleWindow();
+  HDC device_context = GetDC(console_handle);
 
-	//change the color by changing the values in RGB (from 0-255)
-	HPEN pen = CreatePen(PS_SOLID, 2, RGB(color[0], color[1], color[2]));
-	SelectObject(device_context, pen);
-	HBRUSH brush = ::CreateSolidBrush(RGB(bg[0], bg[1], bg[2])); //Fill color is passed as parameter to the function!!!
+  // change the color by changing the values in RGB (from 0-255)
+  HPEN pen = CreatePen(PS_SOLID, 2, RGB(color[0], color[1], color[2]));
+  SelectObject(device_context, pen);
+  HBRUSH brush = ::CreateSolidBrush(
+      RGB(bg[0], bg[1],
+          bg[2])); // Fill color is passed as parameter to the function!!!
 
-	SelectObject(device_context, brush);
+  SelectObject(device_context, brush);
 
-	Rectangle(device_context, x1, y1, x2, y2);
-	ReleaseDC(console_handle, device_context);
-	DeleteObject(pen);
-	DeleteObject(brush);
+  Rectangle(device_context, x1, y1, x2, y2);
+  ReleaseDC(console_handle, device_context);
+  DeleteObject(pen);
+  DeleteObject(brush);
 }
-void myEllipse(int x1, int y1, int x2, int y2, int color[], int bg[])
-{
-	HWND console_handle = GetConsoleWindow();
-	HDC device_context = GetDC(console_handle);
+void myEllipse(int x1, int y1, int x2, int y2, int color[], int bg[]) {
+  HWND console_handle = GetConsoleWindow();
+  HDC device_context = GetDC(console_handle);
 
-	//change the color by changing the values in RGB (from 0-255)
-	HPEN pen = CreatePen(PS_SOLID, 2, RGB(color[0], color[1], color[2]));
-	SelectObject(device_context, pen);
-	HBRUSH brush = ::CreateSolidBrush(RGB(bg[0], bg[1], bg[2])); //Fill color is black
-	SelectObject(device_context, brush);
-	Ellipse(device_context, x1, y1, x2, y2);
-	ReleaseDC(console_handle, device_context);
-	DeleteObject(pen);
-	DeleteObject(brush);
+  // change the color by changing the values in RGB (from 0-255)
+  HPEN pen = CreatePen(PS_SOLID, 2, RGB(color[0], color[1], color[2]));
+  SelectObject(device_context, pen);
+  HBRUSH brush =
+      ::CreateSolidBrush(RGB(bg[0], bg[1], bg[2])); // Fill color is black
+  SelectObject(device_context, brush);
+  Ellipse(device_context, x1, y1, x2, y2);
+  ReleaseDC(console_handle, device_context);
+  DeleteObject(pen);
+  DeleteObject(brush);
 }
