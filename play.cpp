@@ -1,15 +1,9 @@
 #include "help.h"
+#include <conio.h>
 #include <iostream>
 #include <windows.h>
 
 using namespace std;
-
-void print(auto text, int color, char def = 'n') {
-  setTextColor(color);
-  cout << text;
-  if (def == 'y')
-    setTextColor();
-}
 
 struct color_picker {
   int black[3] = {0, 0, 0};
@@ -49,9 +43,12 @@ struct color_picker {
 
 int main() {
   color_picker cp;
-  myRect(500, 500, 50, 0, cp.dora, cp.dora);
-  // myEllipse(200, 200, 250, 150, cp.white, cp.white);
-  // myEllipse(200, 400, 250, 350, cp.white, cp.white);
-  system("pause");
+  int HEIGHT = 450, WIDTH = 300;
+  myRect(WIDTH, HEIGHT, 0, 0, cp.dora, cp.white);
+  for (int y = 200; y < 400; y++) {
+    myEllipse(100, y, 150, y + 50, cp.red, cp.black);
+    Sleep(20);
+  }
+  cin.get();
   return 0;
 }

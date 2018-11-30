@@ -4,8 +4,11 @@ HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 WORD wOldColorAttrs;
 CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
 
-void setTextColor(int color = 7) {
+void setTextColor(int color = 7, char def = 'n') {
   SetConsoleTextAttribute(h, color | FOREGROUND_INTENSITY);
+  if (def == 'y')
+    // Resets the text color
+    SetConsoleTextAttribute(h, 7 | FOREGROUND_INTENSITY);
 }
 
 void gotoxy(int x, int y) {
