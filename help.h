@@ -116,7 +116,7 @@ void myRect(int x1, int y1, int x2, int y2, int color[], int bg[]) {
   HDC device_context = GetDC(console_handle);
 
   // change the color by changing the values in RGB (from 0-255)
-  HPEN pen = CreatePen(PS_SOLID, 2, RGB(color[0], color[1], color[2]));
+  HPEN pen = CreatePen(PS_SOLID, 7, RGB(color[0], color[1], color[2]));
   SelectObject(device_context, pen);
   HBRUSH brush = ::CreateSolidBrush(
       RGB(bg[0], bg[1],
