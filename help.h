@@ -72,49 +72,30 @@ void myTriangle(int x1, int y1, int x2, int y2, int color[], int bg[]) {
 // right and 4 for left.
 bool isCursorKeyPressed(int &whickKey) // whichKey passed as reference....
 {
+  // 1 - Left
+  // 2 - Up
+  // 3 - Right
+  // 4 - Down
+  // 5 - Enter
+  char key;
   int default_key = 37;
+
   for (int i = 37; i <= 40; i++) {
-    if (GetAsyncKeyState(i) == 1) {
+    key = GetAsyncKeyState(i);
+    if (key == 1) {
       whickKey = i - default_key + 1;
       return true;
     }
   }
-  if (GetAsyncKeyState(13) == 1) {
+
+  key = GetAsyncKeyState(13);
+
+  if (key == 1) {
     whickKey = 5;
     return true;
   }
+
   return false;
-
-  //   if (key == 1) {
-  //     whickKey = 1; // 1 if left key is pressed
-  //     return true;
-  //   }
-  //   key = GetAsyncKeyState(38);
-  //   if (key == 1) {
-
-  //     whickKey = 2; // 2 if up key is pressed
-  //     return true;
-  //   }
-
-  //   key = GetAsyncKeyState(39);
-  //   if (key == 1) {
-
-  //     whickKey = 3; // 3 if right key is pressed
-  //     return true;
-  //   }
-  //   key = GetAsyncKeyState(40);
-  //   if (key == 1) {
-
-  //     whickKey = 4; // 4 if down key is pressed
-  //     return true;
-  //   }
-  //   key = GetAsyncKeyState(13);
-  //   if (key == 1) {
-
-  //     whickKey = 5; // 4 if down key is pressed
-  //     return true;
-  //   }
-  //   return false;
 }
 
 void myRect(int x1, int y1, int x2, int y2, int color[], int bg[]) {

@@ -1,6 +1,8 @@
 #include "help.h"
 #include <conio.h>
 #include <iostream>
+#include <map>
+#include <string>
 #include <windows.h>
 
 using namespace std;
@@ -41,14 +43,70 @@ struct color_picker {
   int WHITE = 15;
 };
 
-int main() {
-  color_picker cp;
+int HEIGHT = 450, WIDTH = 300;
+
+int get_boundary(char axis = 'h') {
   int HEIGHT = 450, WIDTH = 300;
+
+  if (axis == 'h')
+    return WIDTH;
+
+  return HEIGHT;
+}
+void move(char direction, int width = WIDTH, int height = HEIGHT);
+
+int main() {
+  // 1 - Left
+  // 2 - Up
+  // 3 - Right
+  // 4 - Down
+  // 5 - Enter
+  color_picker cp;
+
   myRect(WIDTH, HEIGHT, 0, 0, cp.dora, cp.white);
-  for (int y = 200; y < 400; y++) {
-    myEllipse(100, y, 150, y + 50, cp.red, cp.black);
-    Sleep(20);
+
+  map<string, int> KEYSET = {
+      {"left", 1}, {"up", 2}, {"right", 3}, {"down", 4}, {"enter", 5}};
+
+  int left = 50, top = 100, right = 100, bottom = 150;
+
+  while (1) {
+    int key;
+    isCursorKeyPressed(key);
+
+    bool pressed = 1;
+
+    while (key == KEYSET["right"]) {
+      isCursorKeyPressed(key);
+      left++;
+      top++;
+      myEllipse(left, right, top, bottom, cp.red, cp.black);
+      Sleep(5);
+    }
+
+    while (key == KEYSET["left"]) {
+      isCursorKeyPressed(key);
+      top--;
+      left--;
+      myEllipse(left, right, top, bottom, cp.red, cp.black);
+      Sleep(5);
+    }
+
+    while (key == KEYSET["up"]) {
+      isCursorKeyPressed(key);
+      right--;
+      bottom--;
+      myEllipse(left, right, top, bottom, cp.red, cp.black);
+      Sleep(5);
+    }
+
+    while (key == KEYSET["down"]) {
+      isCursorKeyPressed(key);
+      bottom++;
+      right++;
+      myEllipse(left, right, top, bottom, cp.red, cp.black);
+      Sleep(5);
+    }
   }
-  cin.get();
   return 0;
 }
