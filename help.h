@@ -1,5 +1,7 @@
-﻿#include <windows.h>
+﻿#include <iostream>
+#include <windows.h>
 
+using namespace std;
 HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 WORD wOldColorAttrs;
 CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
@@ -65,6 +67,12 @@ void myTriangle(int x1, int y1, int x2, int y2, int color[], int bg[]) {
   DeleteObject(brush);
 }
 
+void setKey(char key, int value, int &whickKey) {
+  key = GetAsyncKeyState(key);
+  if (key == 1)
+    whickKey = value;
+}
+
 // This function checks if any of the 4 cursor keys are pressed.
 // If any cursor key is pressed, then the function returns true, and whichKey
 // identifies which of the 4 cursor keys is pressed. whichkey is assigned
@@ -79,6 +87,11 @@ bool isCursorKeyPressed(int &whickKey) // whichKey passed as reference....
   // 5 - Enter
   char key;
   int default_key = 37;
+
+  setKey('W', 6, whickKey);
+  setKey('S', 7, whickKey);
+  setKey('A', 8, whickKey);
+  setKey('D', 9, whickKey);
 
   for (int i = 37; i <= 40; i++) {
     key = GetAsyncKeyState(i);
