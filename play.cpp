@@ -7,7 +7,8 @@
 
 using namespace std;
 
-struct color_picker {
+struct color_picker
+{
   int black[3] = {0, 0, 0};
   int white[3] = {255, 255, 255};
   int red[3] = {255, 0, 0};
@@ -45,7 +46,14 @@ struct color_picker {
 
 int HEIGHT = 450, WIDTH = 300;
 
-int main() {
+void getinput(int &key, int &key1)
+{
+  isCursorKeyPressed(key);
+  isCursorKeyPressed1(key1);
+}
+
+int main()
+{
   // 1 - Left
   // 2 - Up
   // 3 - Right
@@ -55,9 +63,7 @@ int main() {
 
   myRect(WIDTH, HEIGHT, 0, 0, cp.dora, cp.white);
 
-  map<string, int> KEYSET = {{"left", 1},   {"up", 2},    {"right", 3},
-                             {"down", 4},   {"enter", 5}, {"left1", 8},
-                             {"right1", 9}, {"up1", 6},   {"down1", 7}};
+  map<string, int> KEYSET = {{"left", 1}, {"up", 2}, {"right", 3}, {"down", 4}, {"enter", 5}, {"left1", 8}, {"right1", 9}, {"up1", 6}, {"down1", 7}};
 
   int left = 50, top = 100, right = 100, bottom = 150;
 
@@ -67,57 +73,57 @@ int main() {
 
   myEllipse(left1, right1, top1, bottom1, cp.yellow, cp.olive);
 
-  while (1) {
-    int key;
-    isCursorKeyPressed(key);
+  int key = KEYSET["right"], key1 = KEYSET["right1"];
 
-    while (key == KEYSET["right1"] && left1 <= WIDTH - 50) {
-      isCursorKeyPressed(key);
+  // int dKey, Dkey1;
+
+  while (1)
+  {
+    getinput(key, key1);
+    if (key1 == KEYSET["right1"] && left1 <= WIDTH - 50)
+    {
       myEllipse(++left1, right1, ++top1, bottom1, cp.yellow, cp.olive);
-      Sleep(10);
     }
 
-    while (key == KEYSET["right"] && left <= WIDTH - 50) {
-      isCursorKeyPressed(key);
+    if (key == KEYSET["right"] && left <= WIDTH - 50)
+    {
       myEllipse(++left, right, ++top, bottom, cp.red, cp.black);
-      Sleep(10);
     }
 
-    while (key == KEYSET["left"] && left > 0) {
-      isCursorKeyPressed(key);
+    if (key == KEYSET["left"] && left > 0)
+    {
+
       myEllipse(--left, right, --top, bottom, cp.red, cp.black);
-      Sleep(10);
     }
 
-    while (key == KEYSET["left1"] && left1 > 0) {
-      isCursorKeyPressed(key);
+    if (key1 == KEYSET["left1"] && left1 > 0)
+    {
+
       myEllipse(--left1, right1, --top1, bottom1, cp.yellow, cp.olive);
-      Sleep(10);
     }
 
-    while (key == KEYSET["up1"] && right1 > 0) {
-      isCursorKeyPressed(key);
+    if (key1 == KEYSET["up1"] && right1 > 0)
+    {
+
       myEllipse(left1, --right1, top1, --bottom1, cp.yellow, cp.olive);
-      Sleep(10);
     }
 
-    while (key == KEYSET["up"] && right > 0) {
-      isCursorKeyPressed(key);
+    if (key == KEYSET["up"] && right > 0)
+    {
+
       myEllipse(left, --right, top, --bottom, cp.red, cp.black);
-      Sleep(10);
     }
 
-    while (key == KEYSET["down1"] && right1 <= HEIGHT - 50) {
-      isCursorKeyPressed(key);
+    if (key1 == KEYSET["down1"] && right1 <= HEIGHT - 50)
+    {
+
       myEllipse(left1, ++right1, top1, ++bottom1, cp.yellow, cp.olive);
-      Sleep(10);
     }
 
-    while (key == KEYSET["down"] && right <= HEIGHT - 50) {
-      isCursorKeyPressed(key);
+    if (key == KEYSET["down"] && right <= HEIGHT - 50)
+    {
       myEllipse(left, ++right, top, ++bottom, cp.red, cp.black);
-      Sleep(10);
     }
+    Sleep(3);
   }
-  return 0;
 }
