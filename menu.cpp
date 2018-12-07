@@ -67,6 +67,8 @@ int chooseMenu(map<int, string> &menu) {
 
 int main() {
   // Display Welcome Screen!
+  setTextColor(11);
+
   cout << R"(
 ########################################################
 ########################################################
@@ -88,6 +90,7 @@ int main() {
 
   map<int, string> menu = buildMenu(5, contents);
 
+  setTextColor(4);
   int x = chooseMenu(menu);
   cout << "You have chosen: " << menu[x] << endl;
 }

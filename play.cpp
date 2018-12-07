@@ -7,8 +7,7 @@
 
 using namespace std;
 
-struct color_picker
-{
+struct color_picker {
   int black[3] = {0, 0, 0};
   int white[3] = {255, 255, 255};
   int red[3] = {255, 0, 0};
@@ -44,86 +43,64 @@ struct color_picker
   int WHITE = 15;
 };
 
+// Set the total area covered
 int HEIGHT = 450, WIDTH = 300;
 
-void getinput(int &key, int &key1)
-{
+void getinput(int &key, int &key1) {
   isCursorKeyPressed(key);
-  isCursorKeyPressed1(key1);
+  isKeyPressed(key1);
 }
 
-int main()
-{
-  // 1 - Left
-  // 2 - Up
-  // 3 - Right
-  // 4 - Down
-  // 5 - Enter
+int main() {
   color_picker cp;
 
-  myRect(WIDTH, HEIGHT, 0, 0, cp.dora, cp.white);
+  // Draws boundary
+  myRect(WIDTH, HEIGHT, 0, 0, cp.red, cp.dora);
 
-  map<string, int> KEYSET = {{"left", 1}, {"up", 2}, {"right", 3}, {"down", 4}, {"enter", 5}, {"left1", 8}, {"right1", 9}, {"up1", 6}, {"down1", 7}};
+  // Generate key-mapping for player 1 and 2
+  map<string, int> KEYSET = {{"left", 1},   {"up", 2},    {"right", 3},
+                             {"down", 4},   {"enter", 5}, {"left1", 8},
+                             {"right1", 9}, {"up1", 6},   {"down1", 7}};
 
   int left = 50, top = 100, right = 100, bottom = 150;
 
   int left1 = 200, top1 = 250, right1 = 250, bottom1 = 300;
 
+  // Draw Ellipse's at initial positions
   myEllipse(left, right, top, bottom, cp.red, cp.black);
 
   myEllipse(left1, right1, top1, bottom1, cp.yellow, cp.olive);
 
+  // Set default direction for movement
   int key = KEYSET["right"], key1 = KEYSET["right1"];
 
-  // int dKey, Dkey1;
-
-  while (1)
-  {
+  while (1) {
     getinput(key, key1);
+
     if (key1 == KEYSET["right1"] && left1 <= WIDTH - 50)
-    {
       myEllipse(++left1, right1, ++top1, bottom1, cp.yellow, cp.olive);
-    }
 
     if (key == KEYSET["right"] && left <= WIDTH - 50)
-    {
       myEllipse(++left, right, ++top, bottom, cp.red, cp.black);
-    }
 
     if (key == KEYSET["left"] && left > 0)
-    {
-
       myEllipse(--left, right, --top, bottom, cp.red, cp.black);
-    }
 
     if (key1 == KEYSET["left1"] && left1 > 0)
-    {
-
       myEllipse(--left1, right1, --top1, bottom1, cp.yellow, cp.olive);
-    }
 
     if (key1 == KEYSET["up1"] && right1 > 0)
-    {
-
       myEllipse(left1, --right1, top1, --bottom1, cp.yellow, cp.olive);
-    }
 
     if (key == KEYSET["up"] && right > 0)
-    {
-
       myEllipse(left, --right, top, --bottom, cp.red, cp.black);
-    }
 
     if (key1 == KEYSET["down1"] && right1 <= HEIGHT - 50)
-    {
-
       myEllipse(left1, ++right1, top1, ++bottom1, cp.yellow, cp.olive);
-    }
 
     if (key == KEYSET["down"] && right <= HEIGHT - 50)
-    {
       myEllipse(left, ++right, top, ++bottom, cp.red, cp.black);
-    }
+
     Sleep(3);
   }
 }

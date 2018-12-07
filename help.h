@@ -6,16 +6,14 @@ HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 WORD wOldColorAttrs;
 CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
 
-void setTextColor(int color = 7, char def = 'n')
-{
+void setTextColor(int color = 7, char def = 'n') {
   SetConsoleTextAttribute(h, color | FOREGROUND_INTENSITY);
   if (def == 'y')
     // Resets the text color
     SetConsoleTextAttribute(h, 7 | FOREGROUND_INTENSITY);
 }
 
-void gotoxy(int x, int y)
-{
+void gotoxy(int x, int y) {
   COORD coord;
   coord.X = x;
   coord.Y = y;
@@ -40,8 +38,7 @@ void myLine(int x1, int y1, int x2, int y2,
   DeleteObject(pen);
 }
 
-void myTriangle(int x1, int y1, int x2, int y2, int color[], int bg[])
-{
+void myTriangle(int x1, int y1, int x2, int y2, int color[], int bg[]) {
   HWND console_handle = GetConsoleWindow();
   HDC device_context = GetDC(console_handle);
 
@@ -70,11 +67,9 @@ void myTriangle(int x1, int y1, int x2, int y2, int color[], int bg[])
   DeleteObject(brush);
 }
 
-bool setKey(char key, int value, int &whickKey)
-{
+bool setKey(char key, int value, int &whickKey) {
   key = GetAsyncKeyState(key);
-  if (key == 1)
-  {
+  if (key == 1) {
     whickKey = value;
     return true;
   }
@@ -95,11 +90,9 @@ bool isCursorKeyPressed(int &whickKey) // whichKey passed as reference....
   // 5 - Enter
   char key;
   int default_key = 37;
-  for (int i = 37; i <= 40; i++)
-  {
+  for (int i = 37; i <= 40; i++) {
     key = GetAsyncKeyState(i);
-    if (key == 1)
-    {
+    if (key == 1) {
       whickKey = i - default_key + 1;
       return true;
     }
@@ -107,8 +100,7 @@ bool isCursorKeyPressed(int &whickKey) // whichKey passed as reference....
 
   key = GetAsyncKeyState(13);
 
-  if (key == 1)
-  {
+  if (key == 1) {
     whickKey = 5;
     return true;
   }
@@ -116,8 +108,7 @@ bool isCursorKeyPressed(int &whickKey) // whichKey passed as reference....
   return false;
 }
 
-bool isCursorKeyPressed1(int &whickKey)
-{
+bool isKeyPressed(int &whickKey) {
 
   if (setKey('W', 6, whickKey))
     return true;
@@ -127,11 +118,11 @@ bool isCursorKeyPressed1(int &whickKey)
     return true;
   if (setKey('D', 9, whickKey))
     return true;
+
   return false;
 }
 
-void myRect(int x1, int y1, int x2, int y2, int color[], int bg[])
-{
+void myRect(int x1, int y1, int x2, int y2, int color[], int bg[]) {
   HWND console_handle = GetConsoleWindow();
   HDC device_context = GetDC(console_handle);
 
@@ -149,8 +140,7 @@ void myRect(int x1, int y1, int x2, int y2, int color[], int bg[])
   DeleteObject(pen);
   DeleteObject(brush);
 }
-void myEllipse(int x1, int y1, int x2, int y2, int color[], int bg[])
-{
+void myEllipse(int x1, int y1, int x2, int y2, int color[], int bg[]) {
   HWND console_handle = GetConsoleWindow();
   HDC device_context = GetDC(console_handle);
 
