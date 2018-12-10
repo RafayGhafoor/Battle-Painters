@@ -52,10 +52,11 @@ void getinput(int &key, int &key1) {
 }
 
 int main() {
+
   color_picker cp;
 
   // Draws boundary
-  myRect(WIDTH, HEIGHT, 0, 0, cp.red, cp.dora);
+  myRect(WIDTH, HEIGHT, 20, 30, cp.white, cp.black);
 
   // Generate key-mapping for player 1 and 2
   map<string, int> KEYSET = {{"left", 1},   {"up", 2},    {"right", 3},
@@ -67,40 +68,58 @@ int main() {
   int left1 = 200, top1 = 250, right1 = 250, bottom1 = 300;
 
   // Draw Ellipse's at initial positions
-  myEllipse(left, right, top, bottom, cp.red, cp.black);
+  myEllipse(left, right, top, bottom, cp.cyan, cp.black);
 
-  myEllipse(left1, right1, top1, bottom1, cp.yellow, cp.olive);
+  myEllipse(left1, right1, top1, bottom1, cp.yellow, cp.black);
 
   // Set default direction for movement
   int key = KEYSET["right"], key1 = KEYSET["right1"];
+  int timer = 0, seconds = 35, counter = seconds, threshold = 2;
+  setTextColor(cp.GREEN);
+  cout << "\t\t\t<ETA> .... ";
 
-  while (1) {
+  // seconds * 10 ^ 3
+  while (timer <= seconds * 1000) {
+
+    if (timer % 2000 == 0) {
+      cout << counter << "s ";
+      counter -= threshold;
+    }
+
+    if (counter == seconds / 3) // When 1/3 time is remaining
+      setTextColor(cp.RED);
+
+    if (counter == seconds / 2) // When half time is passed
+      setTextColor(cp.CYAN);
+
     getinput(key, key1);
 
-    if (key1 == KEYSET["right1"] && left1 <= WIDTH - 50)
-      myEllipse(++left1, right1, ++top1, bottom1, cp.yellow, cp.olive);
+    if (key1 == KEYSET["right1"] && top1 <= WIDTH - 6)
+      myEllipse(++left1, right1, ++top1, bottom1, cp.yellow, cp.black);
 
-    if (key == KEYSET["right"] && left <= WIDTH - 50)
-      myEllipse(++left, right, ++top, bottom, cp.red, cp.black);
+    if (key == KEYSET["right"] && top <= WIDTH - 6)
+      myEllipse(++left, right, ++top, bottom, cp.cyan, cp.black);
 
-    if (key == KEYSET["left"] && left > 0)
-      myEllipse(--left, right, --top, bottom, cp.red, cp.black);
+    if (key == KEYSET["left"] && left > 20)
+      myEllipse(--left, right, --top, bottom, cp.cyan, cp.black);
 
-    if (key1 == KEYSET["left1"] && left1 > 0)
-      myEllipse(--left1, right1, --top1, bottom1, cp.yellow, cp.olive);
+    if (key1 == KEYSET["left1"] && left1 > 20)
+      myEllipse(--left1, right1, --top1, bottom1, cp.yellow, cp.black);
 
-    if (key1 == KEYSET["up1"] && right1 > 0)
-      myEllipse(left1, --right1, top1, --bottom1, cp.yellow, cp.olive);
+    if (key1 == KEYSET["up1"] && right1 > 30)
+      myEllipse(left1, --right1, top1, --bottom1, cp.yellow, cp.black);
 
-    if (key == KEYSET["up"] && right > 0)
-      myEllipse(left, --right, top, --bottom, cp.red, cp.black);
+    if (key == KEYSET["up"] && right > 30)
+      myEllipse(left, --right, top, --bottom, cp.cyan, cp.black);
 
-    if (key1 == KEYSET["down1"] && right1 <= HEIGHT - 50)
-      myEllipse(left1, ++right1, top1, ++bottom1, cp.yellow, cp.olive);
+    if (key1 == KEYSET["down1"] && bottom1 <= HEIGHT - 6)
+      myEllipse(left1, ++right1, top1, ++bottom1, cp.yellow, cp.black);
 
-    if (key == KEYSET["down"] && right <= HEIGHT - 50)
-      myEllipse(left, ++right, top, ++bottom, cp.red, cp.black);
+    if (key == KEYSET["down"] && bottom <= HEIGHT - 6)
+      myEllipse(left, ++right, top, ++bottom, cp.cyan, cp.black);
 
-    Sleep(3);
+    timer += 5;
+    Sleep(5);
   }
+  system("pause");
 }
