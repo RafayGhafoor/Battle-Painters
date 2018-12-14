@@ -1,125 +1,174 @@
 #include "help.h"
-#include <conio.h>
-#include <iostream>
 #include <map>
+#include <math.h>
 #include <string>
 #include <windows.h>
 
 using namespace std;
 
-struct color_picker {
+struct color_picker
+{
   int black[3] = {0, 0, 0};
   int white[3] = {255, 255, 255};
-  int red[3] = {255, 0, 0};
-  int lime[3] = {0, 255, 0};
-  int blue[3] = {0, 0, 255};
-  int yellow[3] = {255, 255, 0};
   int cyan[3] = {0, 255, 255};
-  int magenta[3] = {255, 0, 255};
-  int silver[3] = {192, 192, 192};
-  int gray[3] = {128, 128, 128};
-  int maroon[3] = {128, 0, 0};
-  int olive[3] = {128, 128, 0};
-  int green[3] = {0, 128, 0};
-  int purple[3] = {128, 0, 128};
-  int teal[3] = {0, 128, 128};
-  int navy[3] = {0, 0, 128};
-  int dora[3] = {0, 135, 255};
-  int BLACK = 0;
-  int BLUE = 1;
+  int yellow[3] = {255, 255, 0};
   int GREEN = 2;
   int CYAN = 3;
   int RED = 4;
-  int MAGENTA = 5;
-  int BROWN = 6;
-  int LIGHTGRAY = 7;
-  int DARKGRAY = 8;
-  int LIGHTBLUE = 9;
-  int LIGHTGREEN = 10;
-  int LIGHTCYAN = 11;
-  int LIGHTRED = 12;
-  int LIGHTMAGENTA = 13;
-  int YELLOW = 14;
-  int WHITE = 15;
 };
 
-// Set the total area covered
-int HEIGHT = 450, WIDTH = 300;
-
-void getinput(int &key, int &key1) {
+void getinput(int &key, int &key1)
+{
+  // Waits for the input from both users and modifies the key value to the
+  // pressed value
   isCursorKeyPressed(key);
   isKeyPressed(key1);
 }
 
-int main() {
+bool isCollision(int x1, int y1, int x2, int y2, int v1, int w1, int v2,
+                 int w2)
+{
+  // Checks if the two players collide with each other and return the modified
+  // boolean value of collision
+
+  bool collision = false;
+
+  float r = (x2 - x1) / 2, R = (v2 - v1) / 2, centerV = (v1 + v2) / 2,
+        centerW = (w1 + w2) / 2, centerX = (x1 + x2) / 2,
+        centerY = (y1 + y2) / 2;
+
+  float A = centerX - centerV;
+
+  float B = centerY - centerW;
+
+  if (r + R >= sqrt((A * A) + (B * B)))
+    collision = true;
+
+  return collision;
+}
+
+int main()
+{
+  // Set the total area covered
+
+  int HEIGHT = 550, WIDTH = 600;
 
   color_picker cp;
 
+  // Distance from left and right corners of the screen
+
+  int left_offset = 20, up_offset = 30;
+
   // Draws boundary
-  myRect(WIDTH, HEIGHT, 20, 30, cp.white, cp.black);
+  myRect(WIDTH, HEIGHT, left_offset, up_offset, cp.white, cp.white);
 
   // Generate key-mapping for player 1 and 2
-  map<string, int> KEYSET = {{"left", 1},   {"up", 2},    {"right", 3},
-                             {"down", 4},   {"enter", 5}, {"left1", 8},
-                             {"right1", 9}, {"up1", 6},   {"down1", 7}};
+  map<string, int> DIRECTION = {{"left", 1}, {"up", 2}, {"right", 3}, {"down", 4}, {"enter", 5}, {"left1", 6}, {"up1", 7}, {"right1", 8}, {"down1", 9}};
 
-  int left = 50, top = 100, right = 100, bottom = 150;
+  // Define Coordinates for player 1
+  int x1 = 50, y1 = 100, x2 = 100, y2 = 150;
 
-  int left1 = 200, top1 = 250, right1 = 250, bottom1 = 300;
+  // Define Coordinates for player 2
+  int v1 = 200, w1 = 250, v2 = 250, w2 = 300;
 
   // Draw Ellipse's at initial positions
-  myEllipse(left, right, top, bottom, cp.cyan, cp.black);
 
-  myEllipse(left1, right1, top1, bottom1, cp.yellow, cp.black);
+  // Player 1
+  myEllipse(x1, y1, x2, y2, cp.cyan, cp.black);
+
+  // PlayeR
+  myEllipse(v1, w1, v2, w2, cp.yellow, cp.black);
 
   // Set default direction for movement
-  int key = KEYSET["right"], key1 = KEYSET["right1"];
-  int timer = 0, seconds = 35, counter = seconds, threshold = 2;
+  int key = DIRECTION["up"], key1 = DIRECTION["down1"];
+
+  // mseconds = Milliseconds
+  int timer = 0, mseconds = 35, counter = mseconds, threshold = 2,
+      sleep_timer = 5, collision_timeout = 4, note_timer = 0;
+
+  bool collision_enabled = 0, test = 1;
+
+  // Sets the colour for the timer
   setTextColor(cp.GREEN);
-  cout << "\t\t\t<ETA> .... ";
+  cout << "\t\t\t<TIMER> ";
 
-  // seconds * 10 ^ 3
-  while (timer <= seconds * 1000) {
+  // Conversion from milliseconds to seconds | mseconds * 10 ^ 3 |
+  while (timer <= mseconds * 1000)
+  {
 
-    if (timer % 2000 == 0) {
-      cout << counter << "s ";
+    if (timer % (threshold * 1000) == 0)
+    {
+      cout << '*';
       counter -= threshold;
     }
 
-    if (counter == seconds / 3) // When 1/3 time is remaining
+    if (counter == mseconds / 3) // When 1/3 time is remaining
       setTextColor(cp.RED);
 
-    if (counter == seconds / 2) // When half time is passed
+    if (counter == mseconds / 2) // When half  time is passed
       setTextColor(cp.CYAN);
 
     getinput(key, key1);
 
-    if (key1 == KEYSET["right1"] && top1 <= WIDTH - 6)
-      myEllipse(++left1, right1, ++top1, bottom1, cp.yellow, cp.black);
+    if (key1 == DIRECTION["right1"] && v2 <= WIDTH)
+      myEllipse(++v1, w1, ++v2, w2, cp.yellow, cp.black);
 
-    if (key == KEYSET["right"] && top <= WIDTH - 6)
-      myEllipse(++left, right, ++top, bottom, cp.cyan, cp.black);
+    if (key1 == DIRECTION["left1"] && v1 > left_offset)
+      myEllipse(--v1, w1, --v2, w2, cp.yellow, cp.black);
 
-    if (key == KEYSET["left"] && left > 20)
-      myEllipse(--left, right, --top, bottom, cp.cyan, cp.black);
+    if (key1 == DIRECTION["up1"] && w1 > up_offset)
+      myEllipse(v1, --w1, v2, --w2, cp.yellow, cp.black);
 
-    if (key1 == KEYSET["left1"] && left1 > 20)
-      myEllipse(--left1, right1, --top1, bottom1, cp.yellow, cp.black);
+    if (key1 == DIRECTION["down1"] && w2 <= HEIGHT)
+      myEllipse(v1, ++w1, v2, ++w2, cp.yellow, cp.black);
 
-    if (key1 == KEYSET["up1"] && right1 > 30)
-      myEllipse(left1, --right1, top1, --bottom1, cp.yellow, cp.black);
+    if (key == DIRECTION["right"] && x2 <= WIDTH)
+      myEllipse(++x1, y1, ++x2, y2, cp.cyan, cp.black);
 
-    if (key == KEYSET["up"] && right > 30)
-      myEllipse(left, --right, top, --bottom, cp.cyan, cp.black);
+    if (key == DIRECTION["left"] && x1 > left_offset)
+      myEllipse(--x1, y1, --x2, y2, cp.cyan, cp.black);
 
-    if (key1 == KEYSET["down1"] && bottom1 <= HEIGHT - 6)
-      myEllipse(left1, ++right1, top1, ++bottom1, cp.yellow, cp.black);
+    if (key == DIRECTION["up"] && y1 > up_offset)
+      myEllipse(x1, --y1, x2, --y2, cp.cyan, cp.black);
 
-    if (key == KEYSET["down"] && bottom <= HEIGHT - 6)
-      myEllipse(left, ++right, top, ++bottom, cp.cyan, cp.black);
+    if (key == DIRECTION["down"] && y2 <= HEIGHT)
+      myEllipse(x1, ++y1, x2, ++y2, cp.cyan, cp.black);
 
-    timer += 5;
-    Sleep(5);
+    if (!collision_enabled && isCollision(x1, y1, x2, y2, v1, w1, v2, w2))
+    {
+      collision_enabled = true;
+      // Set the opposite direction
+      if (key1 > 5 && key1 < 8)
+        key1 += 2;
+
+      else if (key1 > 7 && key1 <= 9)
+        key1 -= 2;
+
+      if (key > 0 && key < 3)
+        key += 2;
+
+      else if (key > 2 && key <= 4)
+        key -= 2;
+
+      note_timer = timer;
+      sleep_timer *= 5;
+    }
+
+    if (test && collision_enabled &&
+        timer >= note_timer + collision_timeout * 1000)
+    {
+      sleep_timer /= collision_timeout;
+      test = false;
+      collision_enabled = false;
+    }
+
+    // else if (collision_timeout <= 0) {
+    //   sleep_timer /= 5;
+    // }
+
+    Sleep(sleep_timer);
+    timer += sleep_timer; // mseconds * 10 + Sleep_count
   }
-  system("pause");
+  cout << endl;
+  system("cls");
 }
