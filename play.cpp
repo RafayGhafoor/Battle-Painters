@@ -1,15 +1,19 @@
 #include "help.h"
 #include <map>
 #include <math.h>
+#include <stdio.h>
 #include <string>
+#include <time.h>
 #include <windows.h>
 
 using namespace std;
 
-struct color_picker
-{
+struct color_picker {
   int black[3] = {0, 0, 0};
   int white[3] = {255, 255, 255};
+  int red[3] = {255, 0, 0};
+  int lime[3] = {0, 255, 0};
+  int blue[3] = {0, 0, 255};
   int cyan[3] = {0, 255, 255};
   int yellow[3] = {255, 255, 0};
   int GREEN = 2;
@@ -17,24 +21,22 @@ struct color_picker
   int RED = 4;
 };
 
-void getinput(int &key, int &key1)
-{
+void getinput(int &key, int &key1) {
   // Waits for the input from both users and modifies the key value to the
   // pressed value
   isCursorKeyPressed(key);
   isKeyPressed(key1);
 }
 
-bool isCollision(int x1, int y1, int x2, int y2, int v1, int w1, int v2,
-                 int w2)
-{
+bool isCollision(int x1, int y1, int x2, int y2, int a1, int a2, int b1,
+                 int b2) {
   // Checks if the two players collide with each other and return the modified
   // boolean value of collision
 
   bool collision = false;
 
-  float r = (x2 - x1) / 2, R = (v2 - v1) / 2, centerV = (v1 + v2) / 2,
-        centerW = (w1 + w2) / 2, centerX = (x1 + x2) / 2,
+  float r = (x2 - x1) / 2, R = (b1 - a1) / 2, centerV = (a1 + b1) / 2,
+        centerW = (a2 + b2) / 2, centerX = (x1 + x2) / 2,
         centerY = (y1 + y2) / 2;
 
   float A = centerX - centerV;
@@ -48,7 +50,12 @@ bool isCollision(int x1, int y1, int x2, int y2, int v1, int w1, int v2,
 }
 
 int main()
+
 {
+  time_t start = time(NULL);
+  time_t seconds = 30;
+  time_t endwait = start + seconds;
+
   // Set the total area covered
 
   int HEIGHT = 550, WIDTH = 600;
@@ -59,116 +66,106 @@ int main()
 
   int left_offset = 20, up_offset = 30;
 
-  // Draws boundary
   myRect(WIDTH, HEIGHT, left_offset, up_offset, cp.white, cp.white);
 
-  // Generate key-mapping for player 1 and 2
-  map<string, int> DIRECTION = {{"left", 1}, {"up", 2}, {"right", 3}, {"down", 4}, {"enter", 5}, {"left1", 6}, {"up1", 7}, {"right1", 8}, {"down1", 9}};
+  map<string, int> DIRECTION = {{"left", 1}, {"up", 2},     {"right", 3},
+                                {"down", 4}, {"enter", 5},  {"left1", 6},
+                                {"up1", 7},  {"right1", 8}, {"down1", 9}};
 
-  // Define Coordinates for player 1
+  int temp_time;
+
   int x1 = 50, y1 = 100, x2 = 100, y2 = 150;
 
-  // Define Coordinates for player 2
-  int v1 = 200, w1 = 250, v2 = 250, w2 = 300;
+  int a1 = 200, a2 = 250, b1 = 250, b2 = 300;
 
-  // Draw Ellipse's at initial positions
+  myEllipse(x1, y1, x2, y2, cp.red, cp.black);
 
-  // Player 1
-  myEllipse(x1, y1, x2, y2, cp.cyan, cp.black);
+  myEllipse(a1, a2, b1, b2, cp.yellow, cp.black);
 
-  // PlayeR
-  myEllipse(v1, w1, v2, w2, cp.yellow, cp.black);
-
-  // Set default direction for movement
   int key = DIRECTION["up"], key1 = DIRECTION["down1"];
 
-  // mseconds = Milliseconds
-  int timer = 0, mseconds = 35, counter = mseconds, threshold = 2,
-      sleep_timer = 5, collision_timeout = 4, note_timer = 0;
+  int sleep_timer = 3, track_time = 30;
 
-  bool collision_enabled = 0, test = 1;
+  int timer, eta;
 
-  // Sets the colour for the timer
+  bool is_sec = true, collision_enabled = 0, timer_enabled = 0,
+       restore_speed = false;
+
   setTextColor(cp.GREEN);
-  cout << "\t\t\t<TIMER> ";
 
-  // Conversion from milliseconds to seconds | mseconds * 10 ^ 3 |
-  while (timer <= mseconds * 1000)
-  {
+  cout << "\t<ETA> " << track_time << "s ";
 
-    if (timer % (threshold * 1000) == 0)
-    {
-      cout << '*';
-      counter -= threshold;
+  while (start < endwait) {
+
+    if (endwait - start == track_time - 2 || !is_sec) {
+      cout << endwait - start << "s ";
+      is_sec = false;
+      track_time -= 2;
     }
 
-    if (counter == mseconds / 3) // When 1/3 time is remaining
-      setTextColor(cp.RED);
-
-    if (counter == mseconds / 2) // When half  time is passed
-      setTextColor(cp.CYAN);
+    is_sec = true;
 
     getinput(key, key1);
 
-    if (key1 == DIRECTION["right1"] && v2 <= WIDTH)
-      myEllipse(++v1, w1, ++v2, w2, cp.yellow, cp.black);
+    if (key1 == DIRECTION["right1"] && b1 <= WIDTH)
+      myEllipse(++a1, a2, ++b1, b2, cp.yellow, cp.black);
 
-    if (key1 == DIRECTION["left1"] && v1 > left_offset)
-      myEllipse(--v1, w1, --v2, w2, cp.yellow, cp.black);
+    if (key1 == DIRECTION["left1"] && a1 > left_offset)
+      myEllipse(--a1, a2, --b1, b2, cp.yellow, cp.black);
 
-    if (key1 == DIRECTION["up1"] && w1 > up_offset)
-      myEllipse(v1, --w1, v2, --w2, cp.yellow, cp.black);
+    if (key1 == DIRECTION["up1"] && a2 > up_offset)
+      myEllipse(a1, --a2, b1, --b2, cp.yellow, cp.black);
 
-    if (key1 == DIRECTION["down1"] && w2 <= HEIGHT)
-      myEllipse(v1, ++w1, v2, ++w2, cp.yellow, cp.black);
+    if (key1 == DIRECTION["down1"] && b2 <= HEIGHT)
+      myEllipse(a1, ++a2, b1, ++b2, cp.yellow, cp.black);
 
     if (key == DIRECTION["right"] && x2 <= WIDTH)
-      myEllipse(++x1, y1, ++x2, y2, cp.cyan, cp.black);
+      myEllipse(++x1, y1, ++x2, y2, cp.red, cp.black);
 
     if (key == DIRECTION["left"] && x1 > left_offset)
-      myEllipse(--x1, y1, --x2, y2, cp.cyan, cp.black);
+      myEllipse(--x1, y1, --x2, y2, cp.red, cp.black);
 
     if (key == DIRECTION["up"] && y1 > up_offset)
-      myEllipse(x1, --y1, x2, --y2, cp.cyan, cp.black);
+      myEllipse(x1, --y1, x2, --y2, cp.red, cp.black);
 
     if (key == DIRECTION["down"] && y2 <= HEIGHT)
-      myEllipse(x1, ++y1, x2, ++y2, cp.cyan, cp.black);
+      myEllipse(x1, ++y1, x2, ++y2, cp.red, cp.black);
 
-    if (!collision_enabled && isCollision(x1, y1, x2, y2, v1, w1, v2, w2))
-    {
+    if (!collision_enabled && isCollision(x1, y1, x2, y2, a1, a2, b1, b2)) {
+      timer = track_time - 4;
       collision_enabled = true;
-      // Set the opposite direction
-      if (key1 > 5 && key1 < 8)
-        key1 += 2;
 
-      else if (key1 > 7 && key1 <= 9)
-        key1 -= 2;
+      if (isCollision(x1, y1, x2, y2, a1, a2, b1, b2)) {
+        // Set the opposite direction
+        if (key1 > 5 && key1 < 8)
+          key1 += 2;
 
-      if (key > 0 && key < 3)
-        key += 2;
+        else if (key1 > 7 && key1 <= 9)
+          key1 -= 2;
 
-      else if (key > 2 && key <= 4)
-        key -= 2;
+        if (key > 0 && key < 3)
+          key += 2;
 
-      note_timer = timer;
-      sleep_timer *= 5;
+        else if (key > 2 && key <= 4)
+          key -= 2;
+      }
+
+      sleep_timer *= 3;
     }
 
-    if (test && collision_enabled &&
-        timer >= note_timer + collision_timeout * 1000)
-    {
-      sleep_timer /= collision_timeout;
-      test = false;
+    if (track_time == timer && !restore_speed) {
+      sleep_timer /= 3;
+      restore_speed = true;
       collision_enabled = false;
     }
 
-    // else if (collision_timeout <= 0) {
-    //   sleep_timer /= 5;
-    // }
+    start = time(NULL);
 
     Sleep(sleep_timer);
-    timer += sleep_timer; // mseconds * 10 + Sleep_count
   }
+
+  cout << "Calculating Results" << endl;
+
   cout << endl;
   system("cls");
 }
